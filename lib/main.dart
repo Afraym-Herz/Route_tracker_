@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:route_tracker/views/google_map_view.dart';
+import 'package:route_tracker_/views/google_map_view.dart';
 
 void main() {
   runApp(const MyApp());

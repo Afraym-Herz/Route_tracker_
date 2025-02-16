@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:route_tracker/models/place_autocomplete_model/place_autocomplete_model.dart';
+import 'package:route_tracker_/models/place_autocomplete_model/place_autocomplete_model.dart';
 
 class CustomListView extends StatelessWidget {
    CustomListView({super.key , required this.places });
