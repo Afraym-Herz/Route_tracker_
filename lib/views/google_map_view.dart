@@ -5,6 +5,7 @@ import 'package:route_tracker_/utils/google_maps_places_services.dart';
 import 'package:route_tracker_/utils/location_services.dart';
 import 'package:route_tracker_/widgets/custom_list_view.dart';
 import 'package:route_tracker_/widgets/custom_text_field.dart';
+import 'package:uuid/uuid.dart';
 
 class GoogleMapView extends StatefulWidget {
   const GoogleMapView({super.key});
@@ -20,14 +21,16 @@ class _GoogleMapViewState extends State<GoogleMapView> {
   late TextEditingController textEditingController;
   late GoogleMapsPlacesServices googleMapsPlacesServices;
   List<PlaceModel> places = [];
-
   Set<Marker> markers = {};
+  late Uuid uuid ;
+  String? sessionToken ;
 
   @override
   void initState() {
     initalCameraPoistion = const CameraPosition(target: LatLng(0, 0));
     locationService = LocationService();
     textEditingController = TextEditingController();
+    uuid = Uuid() ;
     googleMapsPlacesServices = GoogleMapsPlacesServices();
     fetchPrediction();
     super.initState();
@@ -35,6 +38,7 @@ class _GoogleMapViewState extends State<GoogleMapView> {
 
   void fetchPrediction() {
     textEditingController.addListener(() async {
+      sessionToken ??= uuid.v4() ;
       if (textEditingController.text.isNotEmpty) {
         var result = await googleMapsPlacesServices.getPredictions(
           input: textEditingController.text,
@@ -69,11 +73,19 @@ class _GoogleMapViewState extends State<GoogleMapView> {
           child: Column(
             children: [
               customTextField(textEditingController: textEditingController),
-              SizedBox(height: 16,), 
-              CustomListView(places: places,),
+              SizedBox(height: 16),
+              CustomListView(
+                places: places,
+                googleMapsPlacesServices: googleMapsPlacesServices,
+                onSelectedPlace: (placeDetailsModel) {
+                  textEditingController.clear();
+                  places.clear();
+                  sessionToken = null ;
+                  setState(() {});
+                },
+              ),
             ],
           ),
-          
         ),
       ],
     );
