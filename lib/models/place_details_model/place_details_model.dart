@@ -39,21 +39,24 @@ class PlaceDetailsModel {
 
   factory PlaceDetailsModel.fromJson(Map<String, dynamic> json) {
     return PlaceDetailsModel(
-      addressComponents: (json['address_components'] as List<dynamic>?)
-          ?.map((e) => AddressComponent.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      addressComponents:
+          (json['address_components'] as List<dynamic>?)
+              ?.map((e) => AddressComponent.fromJson(e as Map<String, dynamic>))
+              .toList(),
       adrAddress: json['adr_address'] as String?,
       formattedAddress: json['formatted_address'] as String?,
-      geometry: json['geometry'] == null
-          ? null
-          : Geometry.fromJson(json['geometry'] as Map<String, dynamic>),
+      geometry:
+          json['geometry'] == null
+              ? null
+              : Geometry.fromJson(json['geometry'] as Map<String, dynamic>),
       icon: json['icon'] as String?,
       iconBackgroundColor: json['icon_background_color'] as String?,
       iconMaskBaseUri: json['icon_mask_base_uri'] as String?,
       name: json['name'] as String?,
-      photos: (json['photos'] as List<dynamic>?)
-          ?.map((e) => Photo.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      photos:
+          (json['photos'] as List<dynamic>?)
+              ?.map((e) => Photo.fromJson(e as Map<String, dynamic>))
+              .toList(),
       placeId: json['place_id'] as String?,
       reference: json['reference'] as String?,
       types: json['types'] as List<dynamic>?,
@@ -64,21 +67,20 @@ class PlaceDetailsModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'address_components':
-            addressComponents?.map((e) => e.toJson()).toList(),
-        'adr_address': adrAddress,
-        'formatted_address': formattedAddress,
-        'geometry': geometry?.toJson(),
-        'icon': icon,
-        'icon_background_color': iconBackgroundColor,
-        'icon_mask_base_uri': iconMaskBaseUri,
-        'name': name,
-        'photos': photos?.map((e) => e.toJson()).toList(),
-        'place_id': placeId,
-        'reference': reference,
-        'types': types,
-        'url': url,
-        'utc_offset': utcOffset,
-        'vicinity': vicinity,
-      };
+    'address_components': addressComponents?.map((e) => e.toJson()).toList(),
+    'adr_address': adrAddress,
+    'formatted_address': formattedAddress,
+    'geometry': geometry?.toJson(),
+    'icon': icon,
+    'icon_background_color': iconBackgroundColor,
+    'icon_mask_base_uri': iconMaskBaseUri,
+    'name': name,
+    'photos': photos?.map((e) => e.toJson()).toList(),
+    'place_id': placeId,
+    'reference': reference,
+    'types': types,
+    'url': url,
+    'utc_offset': utcOffset,
+    'vicinity': vicinity,
+  };
 }

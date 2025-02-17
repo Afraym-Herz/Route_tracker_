@@ -5,12 +5,9 @@ class Southwest {
   Southwest({this.lat, this.lng});
 
   factory Southwest.fromJson(Map<String, dynamic> json) => Southwest(
-        lat: (json['lat'] as num?)?.toDouble(),
-        lng: (json['lng'] as num?)?.toDouble(),
-      );
+    lat: (json['lat'] as num?)?.toDouble(),
+    lng: (json['lng'] as num?)?.toDouble(),
+  );
 
-  Map<String, dynamic> toJson() => {
-        'lat': lat,
-        'lng': lng,
-      };
+  Map<String, dynamic> toJson() => {'lat': lat, 'lng': lng};
 }

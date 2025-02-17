@@ -15,8 +15,8 @@ class AddressComponent {
   }
 
   Map<String, dynamic> toJson() => {
-        'long_name': longName,
-        'short_name': shortName,
-        'types': types,
-      };
+    'long_name': longName,
+    'short_name': shortName,
+    'types': types,
+  };
 }

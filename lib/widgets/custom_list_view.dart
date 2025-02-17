@@ -13,7 +13,7 @@ class CustomListView extends StatelessWidget {
   });
   List<PlaceModel> places;
   final GoogleMapsPlacesServices googleMapsPlacesServices;
-   final void Function(PlaceDetailsModel) onSelectedPlace ;
+  final void Function(PlaceDetailsModel) onSelectedPlace;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +29,7 @@ class CustomListView extends StatelessWidget {
               onPressed: () async {
                 var placeDetails = await googleMapsPlacesServices
                     .getPlaceDetails(placeId: places[index].placeId.toString());
-                    onSelectedPlace(placeDetails) ;
+                onSelectedPlace(placeDetails);
               },
             ),
           );
