@@ -13,15 +13,18 @@ import 'package:route_tracker_/utils/location_services.dart';
 import 'package:route_tracker_/utils/routes_services.dart';
 
 class MapsServices {
-  LocationService locationService = LocationService() ;
-  GoogleMapsPlacesServices googleMapsPlacesServices = GoogleMapsPlacesServices() ;
-  RoutesServices routesServices = RoutesServices() ;
+  LocationService locationService = LocationService();
+  GoogleMapsPlacesServices googleMapsPlacesServices =
+      GoogleMapsPlacesServices();
+  RoutesServices routesServices = RoutesServices();
 
-  Future<void> getPredictions( { required String input , required List<PlaceModel> places , required String sessionToken } ) async {
+  Future<void> getPredictions({
+    required String input,
+    required List<PlaceModel> places,
+    required String sessionToken,
+  }) async {
     if (input.isNotEmpty) {
-      var result = await googleMapsPlacesServices.getPredictions(
-        input: input,
-      );
+      var result = await googleMapsPlacesServices.getPredictions(input: input);
       places.clear();
       places.addAll(result);
     } else {
@@ -29,10 +32,16 @@ class MapsServices {
     }
   }
 
-  Future<LatLng> updateCurrentLocation({required GoogleMapController googleMapController , required Set<Marker> markers }) async {
+  Future<LatLng> updateCurrentLocation({
+    required GoogleMapController googleMapController,
+    required Set<Marker> markers,
+  }) async {
     try {
       var locationData = await locationService.getLocation();
-      LatLng currentPosition = LatLng(locationData.latitude!, locationData.longitude!);
+      LatLng currentPosition = LatLng(
+        locationData.latitude!,
+        locationData.longitude!,
+      );
 
       Marker currentPositionMarker = Marker(
         markerId: MarkerId("current"),
@@ -47,43 +56,44 @@ class MapsServices {
         CameraUpdate.newCameraPosition(myCurrentCameraPoistion),
       );
       markers.add(currentPositionMarker);
-      return currentPosition ;
+      return currentPosition;
     } on LocationServiceException {
-      throw Exception('Location services Exception') ;
+      throw Exception('Location services Exception');
     } on LocationPermissionException {
-      throw Exception('Location permission Exception') ;
+      throw Exception('Location permission Exception');
     } catch (e) {
-      throw Exception('unexpected error') ;
+      throw Exception('unexpected error');
     }
   }
 
   getLatLngBounds({required List<LatLng> points}) {
-    var southwestlat =  points.first.latitude ;
-    var southwestlng = points.first.longitude ;
-    var northEastlat = points.first.latitude ;
-    var northEastlng = points.first.longitude ;
+    var southwestlat = points.first.latitude;
+    var southwestlng = points.first.longitude;
+    var northEastlat = points.first.latitude;
+    var northEastlng = points.first.longitude;
 
     for (var point in points) {
       southwestlat = min(southwestlat, point.latitude);
       southwestlng = min(southwestlng, point.longitude);
       northEastlat = max(northEastlat, point.latitude);
       northEastlng = max(northEastlng, point.longitude);
-
     }
-}
+  }
 
-  void displayRoute({ required List<LatLng> points ,required Set<Polyline> polylines }) {
+  void displayRoute({
+    required List<LatLng> points,
+    required Set<Polyline> polylines,
+  }) {
     Polyline route = Polyline(
       polylineId: PolylineId("polyline id"),
       points: points,
       color: Colors.blueAccent,
       width: 5,
     );
-    polylines.add(route) ;
+    polylines.add(route);
   }
 
-
-  List<LatLng> getDecodedRoute({ required RoutesModel routes}) {
+  List<LatLng> getDecodedRoute({required RoutesModel routes}) {
     PolylinePoints polylinePoints = PolylinePoints();
     List<PointLatLng> result = polylinePoints.decodePolyline(
       routes.routes!.first.polyline!.encodedPolyline!,
@@ -93,9 +103,10 @@ class MapsServices {
     return points;
   }
 
-
-
-  Future<List<LatLng>> getRouteData({ required LatLng currentPosition , required LatLng destination }) async {
+  Future<List<LatLng>> getRouteData({
+    required LatLng currentPosition,
+    required LatLng destination,
+  }) async {
     LocationInfoModel origin = LocationInfoModel(
       location: LocationModel(
         latLng: LatLngModel(
@@ -116,8 +127,7 @@ class MapsServices {
       origin: origin,
       destination: destinationModel,
     );
-    var points = getDecodedRoute( routes: routes);
+    var points = getDecodedRoute(routes: routes);
     return points;
   }
-
 }

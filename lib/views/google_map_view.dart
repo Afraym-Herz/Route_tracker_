@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:route_tracker_/utils/maps_services.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,6 +27,7 @@ class _GoogleMapViewState extends State<GoogleMapView> {
   Set<Polyline> polylines = {};
   late MapsServices mapsServices ;
   late LatLng currentPosition ;
+  Timer? debounce ;
 
   @override
   void initState() {
@@ -33,17 +36,32 @@ class _GoogleMapViewState extends State<GoogleMapView> {
     uuid = Uuid();
     fetchPrediction();
     mapsServices = MapsServices() ;
+    
     super.initState();
   }
 
   void fetchPrediction() {
     textEditingController.addListener(() async {
-      sessionToken ??= uuid.v4();
+      debounce = Timer(Duration(microseconds: 200) , () async {
+        if (debounce?.isActive ?? false ) {
+          debounce?.cancel(); 
+        }
+        sessionToken ??= uuid.v4();
       await mapsServices.getPredictions(input : textEditingController.text , sessionToken : sessionToken! , places : places ) ; 
       setState(() {});
+      },) ;
+      
     });
   }
 
+
+    @override
+  void dispose() {
+    googleMapController.dispose(); 
+    debounce?.cancel();
+
+    super.dispose();
+  }
   
 
   @override
@@ -83,8 +101,8 @@ class _GoogleMapViewState extends State<GoogleMapView> {
                     placeDetailsModel.geometry!.location!.lng!,
                   );
                   var points = await mapsServices.getRouteData(currentPosition: currentPosition ,destination: destination );
+                  mapsServices. displayRoute( points: points , polylines: polylines );
                   var bounds = mapsServices.getLatLngBounds(points: points) ;
-                  mapsServices. displayRoute( points:  points ,polylines:  polylines );
                   googleMapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 16));
                 },
               ),
