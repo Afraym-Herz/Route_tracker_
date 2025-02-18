@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:route_tracker_/models/location_info/lat_lng.dart';
 import 'package:route_tracker_/models/location_info/location.dart';
 import 'package:route_tracker_/models/location_info/location_info.dart';
@@ -17,6 +18,7 @@ class MapsServices {
   GoogleMapsPlacesServices googleMapsPlacesServices =
       GoogleMapsPlacesServices();
   RoutesServices routesServices = RoutesServices();
+  late LatLng currentPosition ;
 
   Future<void> getPredictions({
     required String input,
@@ -32,19 +34,20 @@ class MapsServices {
     }
   }
 
-  Future<LatLng> updateCurrentLocation({
+  void updateCurrentLocation({
     required GoogleMapController googleMapController,
     required Set<Marker> markers,
+    required Function onUpdatecurrentLocation ,
   }) async {
     try {
-      var locationData = await locationService.getLocation();
-      LatLng currentPosition = LatLng(
+      var locationData =  locationService.getRealTimeLocationData((locationData){
+        currentPosition = LatLng(
         locationData.latitude!,
         locationData.longitude!,
       );
 
       Marker currentPositionMarker = Marker(
-        markerId: MarkerId("current"),
+        markerId: const MarkerId("current"),
         position: currentPosition,
       );
       CameraPosition myCurrentCameraPoistion = CameraPosition(
@@ -56,7 +59,8 @@ class MapsServices {
         CameraUpdate.newCameraPosition(myCurrentCameraPoistion),
       );
       markers.add(currentPositionMarker);
-      return currentPosition;
+      }) ;
+      
     } on LocationServiceException {
       throw Exception('Location services Exception');
     } on LocationPermissionException {
@@ -85,7 +89,7 @@ class MapsServices {
     required Set<Polyline> polylines,
   }) {
     Polyline route = Polyline(
-      polylineId: PolylineId("polyline id"),
+      polylineId: const PolylineId("polyline id"),
       points: points,
       color: Colors.blueAccent,
       width: 5,

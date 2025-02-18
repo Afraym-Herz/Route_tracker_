@@ -11,8 +11,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
+    return const MaterialApp(
+      home:  Scaffold(
         body: SafeArea(child: GoogleMapView()),
         resizeToAvoidBottomInset: false,
       ),

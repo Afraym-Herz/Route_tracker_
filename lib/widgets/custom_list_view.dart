@@ -23,9 +23,9 @@ class CustomListView extends StatelessWidget {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(places[index].description!),
-            leading: Icon(FontAwesomeIcons.mapPin),
+            leading: const Icon(FontAwesomeIcons.mapPin),
             trailing: IconButton(
-              icon: Icon(FontAwesomeIcons.circleArrowRight),
+              icon: const Icon(FontAwesomeIcons.circleArrowRight),
               onPressed: () async {
                 var placeDetails = await googleMapsPlacesServices
                     .getPlaceDetails(placeId: places[index].placeId.toString());
@@ -35,7 +35,7 @@ class CustomListView extends StatelessWidget {
           );
         },
         separatorBuilder: (context, index) {
-          return Divider(height: 0);
+          return const Divider(height: 0);
         },
         itemCount: places.length,
       ),

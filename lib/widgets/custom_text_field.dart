@@ -10,7 +10,7 @@ class customTextField extends StatelessWidget {
     return TextField(
       controller: textEditingController,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16),
         hintText: "Search Here",
         fillColor: Colors.white,
         filled: true,
@@ -24,7 +24,7 @@ class customTextField extends StatelessWidget {
   OutlineInputBorder buildBorder() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(24),
-      borderSide: BorderSide(color: Colors.transparent),
+      borderSide: const BorderSide(color: Colors.transparent),
     );
   }
 }

@@ -25,44 +25,45 @@ class _GoogleMapViewState extends State<GoogleMapView> {
   String? sessionToken;
   late LatLng destination;
   Set<Polyline> polylines = {};
-  late MapsServices mapsServices ;
-  late LatLng currentPosition ;
-  Timer? debounce ;
+  late MapsServices mapsServices;
+  late LatLng currentPosition;
+  Timer? debounce;
 
   @override
   void initState() {
     initalCameraPoistion = const CameraPosition(target: LatLng(0, 0));
     textEditingController = TextEditingController();
-    uuid = Uuid();
+    uuid = const Uuid();
     fetchPrediction();
-    mapsServices = MapsServices() ;
-    
+    mapsServices = MapsServices();
+
     super.initState();
   }
 
   void fetchPrediction() {
     textEditingController.addListener(() async {
-      debounce = Timer(Duration(microseconds: 200) , () async {
-        if (debounce?.isActive ?? false ) {
-          debounce?.cancel(); 
+      debounce = Timer(const Duration(microseconds: 200), () async {
+        if (debounce?.isActive ?? false) {
+          debounce?.cancel();
         }
         sessionToken ??= uuid.v4();
-      await mapsServices.getPredictions(input : textEditingController.text , sessionToken : sessionToken! , places : places ) ; 
-      setState(() {});
-      },) ;
-      
+        await mapsServices.getPredictions(
+          input: textEditingController.text,
+          sessionToken: sessionToken!,
+          places: places,
+        );
+        setState(() {});
+      });
     });
   }
 
-
-    @override
+  @override
   void dispose() {
-    googleMapController.dispose(); 
+    googleMapController.dispose();
     debounce?.cancel();
 
     super.dispose();
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +73,13 @@ class _GoogleMapViewState extends State<GoogleMapView> {
           polylines: polylines,
           onMapCreated: (controller) async {
             googleMapController = controller;
-            currentPosition = await  mapsServices.updateCurrentLocation(googleMapController: controller , markers: markers);
-            setState(() {});
-
+            mapsServices.updateCurrentLocation(
+              googleMapController: controller,
+              markers: markers,
+              onUpdatecurrentLocation: () {
+                setState(() {});
+              },
+            );
           },
           initialCameraPosition: initalCameraPoistion,
           zoomControlsEnabled: false,
@@ -87,7 +92,7 @@ class _GoogleMapViewState extends State<GoogleMapView> {
           child: Column(
             children: [
               customTextField(textEditingController: textEditingController),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               CustomListView(
                 places: places,
                 googleMapsPlacesServices: mapsServices.googleMapsPlacesServices,
@@ -100,10 +105,18 @@ class _GoogleMapViewState extends State<GoogleMapView> {
                     placeDetailsModel.geometry!.location!.lat!,
                     placeDetailsModel.geometry!.location!.lng!,
                   );
-                  var points = await mapsServices.getRouteData(currentPosition: currentPosition ,destination: destination );
-                  mapsServices. displayRoute( points: points , polylines: polylines );
-                  var bounds = mapsServices.getLatLngBounds(points: points) ;
-                  googleMapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 16));
+                  var points = await mapsServices.getRouteData(
+                    currentPosition: currentPosition,
+                    destination: destination,
+                  );
+                  mapsServices.displayRoute(
+                    points: points,
+                    polylines: polylines,
+                  );
+                  var bounds = mapsServices.getLatLngBounds(points: points);
+                  googleMapController.animateCamera(
+                    CameraUpdate.newLatLngBounds(bounds, 16),
+                  );
                 },
               ),
             ],
@@ -112,7 +125,4 @@ class _GoogleMapViewState extends State<GoogleMapView> {
       ],
     );
   }
-
-
-  }
-
+}
